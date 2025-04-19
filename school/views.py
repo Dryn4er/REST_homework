@@ -8,10 +8,6 @@ from school.models import Course, Lesson
 from school.serializers import CourseSerializer, LessonSerializer
 
 
-class HomePageView(TemplateView):
-    template_name = "home.html"
-
-
 class CourseViewSet(ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
