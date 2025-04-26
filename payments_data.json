@@ -1,0 +1,26 @@
+{
+    "user": {
+        "id": 2,
+        "email": "test@example.com",
+        "is_staff": true,
+        "is_superuser": true
+    },
+    "payments": [
+        {
+            "owner_id": 2,
+            "payment_date": "2023-10-01",
+            "paid_course_id": 5,
+            "paid_lesson_id": null,
+            "amount": 100.0,
+            "type": "CASH"
+        },
+        {
+            "owner_id": 2,
+            "payment_date": "2023-10-02",
+            "paid_course_id": null,
+            "paid_lesson_id": 15,
+            "amount": 150.0,
+            "type": "BANK_TRANSFER"
+        }
+    ]
+}

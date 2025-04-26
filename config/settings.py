@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vxm^^=^2wqnsw+(*^20_5e^!f6re@wk5lk-$es&()wopf^*a3j'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'users',
+    'school',
+
 
 
 ]
@@ -141,24 +143,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.User"
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_PORT = 2525
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = os.getenv("SMTP_USERNAME")
-EMAIL_HOST_PASSWORD = os.getenv("SMTP_PASSWORD")
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-LOGIN_REDIRECT_URL = 'mailing:home'
-LOGIN_URL = 'users:login'
-
-CACHE_ENABLED = True
-if CACHE_ENABLED:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-            'LOCATION': os.getenv("LOCATION"),
-        }
-    }
