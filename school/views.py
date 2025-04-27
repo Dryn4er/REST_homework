@@ -25,11 +25,6 @@ class CourseViewSet(ModelViewSet):
         return super().get_permissions()
 
 
-class LessonViewSet(viewsets.ModelViewSet):
-    serializer_class = LessonSerializer
-    queryset = Lesson.objects.all()
-
-
 class LessonCreateApiView(CreateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
@@ -59,4 +54,4 @@ class LessonUpdateApiView(UpdateAPIView):
 
 class LessonDestroyApiView(DestroyAPIView):
     queryset = Lesson.objects.all()
-    permission_classes = (IsAuthenticated, IsModerator | IsOwner)
+    permission_classes = (IsAuthenticated | IsOwner)
