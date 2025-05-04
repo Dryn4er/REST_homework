@@ -1,12 +1,14 @@
 from rest_framework import serializers
 
-from school.models import Course, Lesson
+from school.models import Course, Lesson, Subscription
+from school.validators import VideoLinkValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ["id", "title", "description", "picture", "course", "video_url"]
+        validators = [VideoLinkValidator(field='video_link')]
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -26,3 +28,9 @@ class CourseSerializer(serializers.ModelSerializer):
             "count_of_lessons",
             "info_lessons",
         )
+
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = '__all__'
