@@ -18,8 +18,8 @@ urlpatterns = [
     path("lessons/create/", LessonCreateApiView.as_view(), name="lessons_create"),
     path("lessons/<int:pk>/delete/", LessonDestroyApiView.as_view(), name="lessons_delete"),
     path("lessons/<int:pk>/update/", LessonUpdateApiView.as_view(), name="lessons_update"),
-    path('subscription/create/', SubscriptionCreateAPIView.as_view(), name='subscription_create'),
-    path('subscription/', SubscriptionListAPIView.as_view(), name='subscription_list'),
+    path('subscriptions/create/', SubscriptionCreateAPIView.as_view(), name='subscription_create'),
+    path('subscriptions/', SubscriptionListAPIView.as_view(), name='subscription_list'),
 ]
 
 # Добавляем маршруты из SimpleRouter
