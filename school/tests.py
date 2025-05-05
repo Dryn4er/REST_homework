@@ -9,11 +9,36 @@ from users.models import User
 class SubscriptionTests(APITestCase):
 
     def setUp(self):
-        self.user = User.objects.create(email="admin@mail.ru")
+        self.user = User.objects.create_user(username='admin', password='password')
         self.course = Course.objects.create(title="Python")
-        self.lesson = Lesson.objects.create(title="drf", course=self.course, owner=self.user)
         self.client.force_authenticate(user=self.user)
 
+    def test_subscription_create(self):
+        Subscription.objects.all().delete()
+
+        data = {
+            'course': self.course.pk,
+        }
+
+        response = self.client.post('/subscriptions/create/', data=data)
+
+        print(response.content)
+        self.assertEqual(response.status_code,
+                         status.HTTP_200_OK)
+
+        self.assertEqual(Subscription.objects.count(), 1)
+        self.assertEqual(Subscription.objects.first().course, self.course)
+
+    def test_subscription_list(self):
+        Subscription.objects.create(user=self.user, course=self.course)
+
+        response = self.client.get('/subscriptions/')
+
+        print(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        subscriptions = response.json()
+        self.assertGreater(len(subscriptions), 0)
 
 class LessonTestCase(APITestCase):
     def setUp(self):
