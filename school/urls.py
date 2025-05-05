@@ -10,7 +10,6 @@ app_name = SchoolConfig.name
 
 router = SimpleRouter()
 router.register("courses", CourseViewSet)
-router.register("subscriptions", SubscriptionViewSet)
 
 urlpatterns = [
     path("lessons/", LessonListApiView.as_view(), name="lessons_list"),

@@ -1,8 +1,9 @@
 from django.views.generic import TemplateView
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView)
+                                     UpdateAPIView, get_object_or_404)
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from school.paginators import CustomPageNumberPagination
@@ -62,18 +63,26 @@ class LessonDestroyApiView(DestroyAPIView):
     permission_classes = (IsAuthenticated | IsOwner)
 
 
-class SubscriptionViewSet(viewsets.ViewSet):
-    def create(self, request):
-        serializer = SubscriptionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+class SubscriptionCreateAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = Subscription.objects.all()
+    serializer_class = SubscriptionSerializer
 
-    def destroy(self, request, pk=None):
-        subscription = self.get_object(pk)
-        subscription.delete()
-        return Response(status=204)
+    def post(self, request, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get('course')
+        course = get_object_or_404(Course, pk=course_id)
 
-    def get_object(self, pk):
-        return Subscription.objects.get(pk=pk)
+        subs_item = Subscription.objects.filter(user=user, course=course)
+        if subs_item.exists():
+            subs_item.delete()
+            message = 'Подписка удалена'
+        else:
+            Subscription.objects.create(user=user, course=course)
+            message = 'Подписка добавлена'
+        return Response({"message": message})
+
+
+class SubscriptionListAPIView(generics.ListAPIView):
+    serializer_class = SubscriptionSerializer
+    queryset = Subscription.objects.all()
