@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import User
+
 from config import settings
+from users.models import User
 
 
 class Course(models.Model):
@@ -81,7 +82,7 @@ class Lesson(models.Model):
 
 
 class Subscription(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     class Meta:
