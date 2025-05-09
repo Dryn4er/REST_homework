@@ -5,7 +5,7 @@ from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      UpdateAPIView, get_object_or_404)
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-
+from school.tasks import sending_update_course
 from school.paginators import CustomPageNumberPagination
 from users.permissions import IsModerator, IsOwner
 from school.models import Course, Lesson, Subscription
@@ -37,6 +37,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         elif self.action == 'destroy':
             self.permission_classes = (IsOwner | ~IsModerator,)
         return super().get_permissions()
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+        sending_update_course.delay(course)
+        course.save()
 
 
 class LessonViewSet(viewsets.ModelViewSet):
