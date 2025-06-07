@@ -18,6 +18,7 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     env:
+      SECRET_KEY: 'secret-key'
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       POSTGRES_DB: mytestdb
