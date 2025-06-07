@@ -11,7 +11,7 @@ jobs:
         ports:
           - 5432:5432
         env:
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          SECRET_KEY: 'secret-key'
           POSTGRES_DB: mytestdb
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
