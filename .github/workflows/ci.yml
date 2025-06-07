@@ -19,7 +19,7 @@ jobs:
 
     env:
       SECRET_KEY: 'secret-key'
-      POSTGRES_HOST: localhost
+      POSTGRES_HOST: 'localhost'
       POSTGRES_PORT: 5432
       POSTGRES_DB: mytestdb
       POSTGRES_USER: postgres
