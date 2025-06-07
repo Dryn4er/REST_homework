@@ -9,9 +9,9 @@ def sending_update_course(course):
     course_updates = Subscription.objects.filter(course=course.id)
     for single_update in course_updates:
         send_mail(
-            subject='Обновление материалов курса!',
-            message=f'Вышло обновление материалов курса - {single_update.course.title}',
+            subject="Обновление материалов курса!",
+            message=f"Вышло обновление материалов курса - {single_update.course.title}",
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=[single_update.user.email]
+            recipient_list=[single_update.user.email],
         )
     print("Сообщение отправлено")

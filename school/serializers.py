@@ -9,7 +9,7 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ["id", "title", "description", "picture", "course", "video_url"]
-        validators = [YoutubeLinkValidator(field='video')]
+        validators = [YoutubeLinkValidator(field="video")]
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = "__all__"
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
@@ -30,8 +30,8 @@ class CourseDetailSerializer(serializers.ModelSerializer):
         return Lesson.objects.filter(course=course).count()
 
     def get_subscription(self, course):
-        user = self.context.get('request').user
-        course = self.context.get('view').kwargs.get('pk')
+        user = self.context.get("request").user
+        course = self.context.get("view").kwargs.get("pk")
         subscription = Subscription.objects.filter(user=user, course=course)
         if subscription.exists():
             return True
@@ -40,7 +40,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('title', 'description', 'count_lessons')
+        fields = ("title", "description", "count_lessons")
 
 
 class LessonDetailSerializer(serializers.ModelSerializer):
@@ -50,4 +50,4 @@ class LessonDetailSerializer(serializers.ModelSerializer):
 class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = '__all__'
+        fields = "__all__"

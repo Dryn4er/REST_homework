@@ -14,5 +14,5 @@ def my_task():
     for user in users:
         if today - user.last_login > deactivate_time:
             user.is_active = False
-            print(f'{user} отключен')
+            print(f"{user} отключен")
             user.save()

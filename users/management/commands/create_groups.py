@@ -1,11 +1,12 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
 
+
 class Command(BaseCommand):
-    help = 'Create default groups'
+    help = "Create default groups"
 
     def handle(self, *args, **kwargs):
-        groups = ['admin', 'user' , 'moders']
+        groups = ["admin", "user", "moders"]
         for group_name in groups:
             group, created = Group.objects.get_or_create(name=group_name)
             if created:

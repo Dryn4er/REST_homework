@@ -3,7 +3,6 @@ from django.db import models
 from config import settings
 
 
-
 class Course(models.Model):
     title = models.CharField(
         max_length=100,
@@ -25,7 +24,9 @@ class Course(models.Model):
         help_text="Загрузите превью",
     )
 
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "Курс"
@@ -70,7 +71,9 @@ class Lesson(models.Model):
         help_text="загрузите видео",
     )
 
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     class Meta:
         verbose_name = "Урок"
@@ -80,10 +83,9 @@ class Lesson(models.Model):
         return self.title
 
 
-
 class Subscription(models.Model):
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('user', 'course')
+        unique_together = ("user", "course")

@@ -5,7 +5,7 @@ from users.models import Payment, User
 
 
 class Command(BaseCommand):
-    help = 'Create a user and payment data, then save it to a JSON file'
+    help = "Create a user and payment data, then save it to a JSON file"
 
     def handle(self, *args, **options):
         params = dict(email="test@example.com", password="qwerty")
@@ -32,7 +32,7 @@ class Command(BaseCommand):
                 "paid_lesson_id": 15,
                 "amount": 150.00,
                 "type": "BANK_TRANSFER",
-            }
+            },
         ]
 
         # Сохранение платежей в базе данных
@@ -41,31 +41,37 @@ class Command(BaseCommand):
 
         # Подготовка данных для записи в JSON
         output_data = {
-            'user': {
-                'id': user.id,
-                'email': user.email,
-                'is_staff': user.is_staff,
-                'is_superuser': user.is_superuser,
+            "user": {
+                "id": user.id,
+                "email": user.email,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser,
             },
-            'payments': [
+            "payments": [
                 {
-                    'owner_id': payment['owner'].id,  # Сохраняем только ID пользователя для JSON
-                    'payment_date': payment['payment_date'],
-                    'paid_course_id': payment['paid_course_id'],
-                    'paid_lesson_id': payment['paid_lesson_id'],
-                    'amount': payment['amount'],
-                    'type': payment['type'],
+                    "owner_id": payment[
+                        "owner"
+                    ].id,  # Сохраняем только ID пользователя для JSON
+                    "payment_date": payment["payment_date"],
+                    "paid_course_id": payment["paid_course_id"],
+                    "paid_lesson_id": payment["paid_lesson_id"],
+                    "amount": payment["amount"],
+                    "type": payment["type"],
                 }
                 for payment in payments_data
-            ]
+            ],
         }
 
         # Укажите полный путь к файлу или используйте os.path.join для создания файла в нужной директории
-        json_file_path = os.path.join(os.getcwd(), 'payments_data.json')
+        json_file_path = os.path.join(os.getcwd(), "payments_data.json")
 
         try:
-            with open(json_file_path, 'w') as json_file:
+            with open(json_file_path, "w") as json_file:
                 json.dump(output_data, json_file, indent=4)
-            self.stdout.write(self.style.SUCCESS(f"Данные о платежах успешно загружены и сохранены в {json_file_path}!"))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Данные о платежах успешно загружены и сохранены в {json_file_path}!"
+                )
+            )
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"Ошибка при записи файла: {e}"))

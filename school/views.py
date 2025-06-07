@@ -1,15 +1,25 @@
 from django.views.generic import TemplateView
 from rest_framework import viewsets, generics
-from rest_framework.generics import (CreateAPIView, DestroyAPIView,
-                                     ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView, get_object_or_404)
+from rest_framework.generics import (
+    CreateAPIView,
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveAPIView,
+    UpdateAPIView,
+    get_object_or_404,
+)
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from school.tasks import sending_update_course
 from school.paginators import CustomPageNumberPagination
 from users.permissions import IsModerator, IsOwner
 from school.models import Course, Lesson, Subscription
-from school.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer, CourseDetailSerializer
+from school.serializers import (
+    CourseSerializer,
+    LessonSerializer,
+    SubscriptionSerializer,
+    CourseDetailSerializer,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -20,7 +30,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPageNumberPagination
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
+        if self.action == "retrieve":
             return CourseDetailSerializer
         return CourseSerializer
 
@@ -30,11 +40,11 @@ class CourseViewSet(viewsets.ModelViewSet):
         course.save()
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action == "create":
             self.permission_classes = (~IsModerator,)
-        elif self.action in ['update', 'retrieve']:
+        elif self.action in ["update", "retrieve"]:
             self.permission_classes = (IsModerator | IsOwner,)
-        elif self.action == 'destroy':
+        elif self.action == "destroy":
             self.permission_classes = (IsOwner | ~IsModerator,)
         return super().get_permissions()
 
@@ -91,16 +101,16 @@ class SubscriptionCreateAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
-        course_id = self.request.data.get('course')
+        course_id = self.request.data.get("course")
         course = get_object_or_404(Course, pk=course_id)
 
         subs_item = Subscription.objects.filter(user=user, course=course)
         if subs_item.exists():
             subs_item.delete()
-            message = 'Подписка удалена'
+            message = "Подписка удалена"
         else:
             Subscription.objects.create(user=user, course=course)
-            message = 'Подписка добавлена'
+            message = "Подписка добавлена"
         return Response({"message": message})
 
 
