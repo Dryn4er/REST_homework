@@ -63,6 +63,7 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
       POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+      HOST_KEY: ${{ secrets.HOST_KEY }}
 
     steps:
     - name: Set up SSH
