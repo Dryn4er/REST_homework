@@ -99,6 +99,7 @@ jobs:
         cd "${{ secrets.DEPLOY_DIR }}"
         source venv/bin/activate
         export SECRET_KEY="${{ secrets.SECRET_KEY }}"
+        rsync -avz ./manage.py ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
         python manage.py migrate
         EOF
 
