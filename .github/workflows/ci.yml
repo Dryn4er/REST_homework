@@ -79,6 +79,8 @@ jobs:
         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
           sudo mkdir -p "${{ secrets.DEPLOY_DIR }}"
         EOF
+      env:
+        DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
 
     - name: Copy project files to server
       run: |
