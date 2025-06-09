@@ -99,7 +99,7 @@ jobs:
         ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
         set -e
         set -x        
-        cd "${{ secrets.DEPLOY_DIR }}"
+        cd ${{ secrets.DEPLOY_DIR }}
         source "venv/bin/activate"
         export SECRET_KEY=${{ secrets.SECRET_KEY }}
         python manage.py migrate
