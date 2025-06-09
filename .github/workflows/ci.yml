@@ -86,8 +86,9 @@ jobs:
 
     - name: Install dependencies on server
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          cd ${{ secrets.DEPLOY_DIR }}
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
+          DEPLOY_DIR="${{ secrets.DEPLOY_DIR }}"
+          cd "\$DEPLOY_DIR"
           if [ ! -d "venv" ]; then
             python3 -m venv venv
           fi
