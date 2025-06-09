@@ -89,13 +89,13 @@ jobs:
         ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
         set -e
         set -x
-          DEPLOY_DIR="${{ secrets.DEPLOY_DIR }}"
-          VENV_DIR="\$DEPLOY_DIR/venv"
-          cd "\$DEPLOY_DIR"
-          if [ ! -d "\$VENV_DIR" ]; then
-            python3 -m venv "\$VENV_DIR"
-          fi
-          source "\$VENV_DIR/bin/activate" && pip install -r requirements.txt
+        DEPLOY_DIR="${{ secrets.DEPLOY_DIR }}"
+        VENV_PATH="\$HOME/venv"  # или другой путь с правами доступа
+        cd "\$DEPLOY_DIR"
+        if [ ! -d "\$VENV_PATH" ]; then
+          python3 -m venv "\$VENV_PATH"
+        fi
+        source "\$VENV_PATH/bin/activate" && pip install -r requirements.txt
         EOF
 
     - name: Apply migrations on server
