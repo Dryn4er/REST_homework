@@ -90,7 +90,6 @@ jobs:
           cd ${{ secrets.DEPLOY_DIR }}
           python3 -m venv venv
           source venv/bin/activate
-          python -m pip install --upgrade pip
           pip install -r requirements.txt
         EOF
 
@@ -100,7 +99,7 @@ jobs:
         cd ${{ secrets.DEPLOY_DIR }}
         source "venv/bin/activate"
         export SECRET_KEY="${{ secrets.SECRET_KEY }}"
-        python manage.py migrate
+        python3 manage.py migrate
         EOF
 
     - name: Collect static files on server
