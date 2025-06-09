@@ -76,9 +76,9 @@ jobs:
 
     - name: Create directory
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << "EOF"
-          sudo mkdir -p ${{ secrets.DEPLOY_DIR }}
-        EOF       
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
+          sudo mkdir -p "${{ secrets.DEPLOY_DIR }}"
+        EOF
 
     - name: Copy project files to server
       run: |
