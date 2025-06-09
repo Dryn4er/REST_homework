@@ -55,73 +55,32 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: test
-    env:
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-      POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
-      HOST_KEY: ${{ secrets.HOST_KEY }}
-
+    needs: tests
+    if: success()
 
     steps:
-    - name: Setup SSH key and known_hosts
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts\
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Create deploy directory on server
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo mkdir -p '${{ secrets.DEPLOY_DIR }}'"
+      - name: Deploy to server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          ROOT_PASSWORD: ${{ secrets.ROOT_PASSWORD }}
+        run: |
+          sshpass -p "ntSHuQx?wA&u" ssh -v -o StrictHostKeyChecking=no root@94.103.12.183 "
+            set -e
 
-    - name: Copy project files to server
-      run: |
-        rsync -avz --no-times --exclude '__pycache__' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
+            while fuser /var/lib/apt/lists/lock >/dev/null 2>&1; do
+              echo 'Waiting for other apt processes to finish...'
+              sleep 5
+            done
 
-    - name: Install dependencies on server
-      run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-        set -e
-        set -x
-        DEPLOY_DIR="${{ secrets.DEPLOY_DIR }}"
-        VENV_PATH="\$DEPLOY_DIR/venv"
-        cd "\$DEPLOY_DIR"
-        if [ ! -d "\$VENV_PATH" ]; then
-          python3 -m venv "\$VENV_PATH"
-        fi
-        source "\$VENV_PATH/bin/activate" && pip install -r requirements.txt
-        EOF
-
-    - name: Apply migrations on server
-      run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-        set -e
-        set -x        
-        cd "${{ secrets.DEPLOY_DIR }}"
-        source "venv/bin/activate"
-        export SECRET_KEY=${{ secrets.SECRET_KEY }}
-        python manage.py migrate
-        EOF
-
-    - name: Collect static files on server
-      run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-        set -e
-        set -x        
-        cd "${{ secrets.DEPLOY_DIR }}"
-        source "venv/bin/activate"
-        export SECRET_KEY=${{ secrets.SECRET_KEY }}
-        python manage.py collectstatic --noinput
-        EOF
-
-    - name: Restart application
-      run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-        set -e
-        set -x
-          sudo systemctl restart myapp.service
-        EOF
+            apt-get update && apt-get install -y python3.12-venv && \
+            cd /root/Django_DRF && \
+            git switch feature/homework_35.2 && \
+            python3 -m venv venv && \
+            source venv/bin/activate && \
+            git pull && \
+            pip install -r requirements.txt && \
+            sudo systemctl restart nginx
+          "
