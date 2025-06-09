@@ -96,12 +96,12 @@ jobs:
 
     - name: Apply migrations on server
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} 'bash -s' << 'EOF'
         set -e
-        set -x        
-        cd ${{ secrets.DEPLOY_DIR }}
+        set -x
+        cd "${{ secrets.DEPLOY_DIR }}"
         source "venv/bin/activate"
-        export SECRET_KEY=${{ secrets.SECRET_KEY }}
+        export SECRET_KEY="${{ secrets.SECRET_KEY }}"
         python manage.py migrate
         EOF
 
