@@ -97,7 +97,7 @@ jobs:
 
     - name: Apply migrations on server
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
+        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
         set -e
         set -x        
         cd "${{ secrets.DEPLOY_DIR }}"
