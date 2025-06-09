@@ -82,9 +82,12 @@ jobs:
       run: |
         rsync -avz --no-times --exclude '__pycache__' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
 
+    - name: Проверка наличия requirements.txt после checkout
+      run: ls -l requirements.txt
+
     - name: Upload requirements.txt to server
       run: |
-        scp -o StrictHostKeyChecking=no requirements.txt ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.VENV_PATH }}/requirements.txt
+        scp -o StrictHostKeyChecking=no requirements.txt ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}/requirements.txt
 
     - name: Install dependencies on server
       run: |
