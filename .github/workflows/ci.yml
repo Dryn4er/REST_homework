@@ -86,11 +86,10 @@ jobs:
 
     - name: Install dependencies on server
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd ${{ secrets.DEPLOY_DIR }}
           python3 -m venv venv
           source venv/bin/activate 
-          pip freeze > requirements.txt 
           pip install -r requirements.txt
         EOF
 
