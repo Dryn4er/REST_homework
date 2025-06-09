@@ -76,34 +76,27 @@ jobs:
 
     - name: Create directory
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-          sudo mkdir -p "${{ secrets.DEPLOY_DIR }}"
-        EOF
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          mkdir -p ${{ secrets.DEPLOY_DIR }}
+        EOF          
 
     - name: Copy project files to server
       run: |
-        rsync -avz --no-times --exclude '__pycache__' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
+        rsync -avz --exclude '__pycache__' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
 
     - name: Install dependencies on server
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-        set -e
-        set -x
-          DEPLOY_DIR="${{ secrets.DEPLOY_DIR }}"
-          VENV_DIR="\$DEPLOY_DIR/venv"
-          cd "\$DEPLOY_DIR"
-          if [ ! -d "\$VENV_DIR" ]; then
-            python3 -m venv "\$VENV_DIR"
-          fi
-          source "\$VENV_DIR/bin/activate" && pip install -r requirements.txt
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd ${{ secrets.DEPLOY_DIR }}
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
         EOF
 
     - name: Apply migrations on server
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-        set -e
-        set -x        
-          cd "${{ secrets.DEPLOY_DIR }}"
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd ${{ secrets.DEPLOY_DIR }}
           source venv/bin/activate
           export SECRET_KEY=${{ secrets.SECRET_KEY }}
           python manage.py migrate
@@ -111,10 +104,8 @@ jobs:
 
     - name: Collect static files on server
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-        set -e
-        set -x        
-          cd "${{ secrets.DEPLOY_DIR }}"
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd ${{ secrets.DEPLOY_DIR }}
           source venv/bin/activate
           export SECRET_KEY=${{ secrets.SECRET_KEY }}
           python manage.py collectstatic --noinput
@@ -122,8 +113,6 @@ jobs:
 
     - name: Restart application
       run: |
-        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-        set -e
-        set -x
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           sudo systemctl restart myapp.service
         EOF
