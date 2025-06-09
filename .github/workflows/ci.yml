@@ -89,7 +89,8 @@ jobs:
         ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd ${{ secrets.DEPLOY_DIR }}
           python3 -m venv venv
-          source venv/bin/activate 
+          source venv/bin/activate
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
         EOF
 
