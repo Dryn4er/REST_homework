@@ -90,6 +90,7 @@ jobs:
           cd ${{ secrets.DEPLOY_DIR }}
           python3 -m venv venv
           source venv/bin/activate 
+          pip freeze > requirements.txt
         scp -o StrictHostKeyChecking=no requirements.txt ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }} 
           pip install -r requirements.txt
         EOF
