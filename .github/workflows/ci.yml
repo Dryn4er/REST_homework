@@ -84,7 +84,7 @@ jobs:
 
     - name: Upload requirements.txt to server
       run: |
-        scp -o StrictHostKeyChecking=no C:\Users\Admin\PycharmProjects\REST_homework\requirements.txt ${{ secrets.SERVER_IP }}
+        scp -o StrictHostKeyChecking=no "C:\Users\Admin\PycharmProjects\REST_homework\requirements.txt" ${{ secrets.SERVER_IP }}
 
     - name: Install dependencies on server
       run: |
