@@ -67,64 +67,62 @@ jobs:
 
 
     steps:
-      - name: Setup SSH key and known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+    - name: Setup SSH key and known_hosts
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts\
 
-      - name: Создать директорию на сервере
-        run: |
-          ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-          set -e
-          echo "Создаю директорию: ${{ secrets.DEPLOY_DIR }}"
+    - name: Create directory
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
           sudo mkdir -p "${{ secrets.DEPLOY_DIR }}"
-          EOF
+        EOF
 
-      - name: Копировать файлы проекта на сервер
-        run: |
-          rsync -avz --no-times --exclude '__pycache__' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
+    - name: Copy project files to server
+      run: |
+        rsync -avz --no-times --exclude '__pycache__' . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
 
-      - name: Установить зависимости на сервере
-        run: |
-          ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-          set -e
-          set -x
+    - name: Install dependencies on server
+      run: |
+        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
+        set -e
+        set -x
           DEPLOY_DIR="${{ secrets.DEPLOY_DIR }}"
           cd "\$DEPLOY_DIR"
           if [ ! -d "venv" ]; then
             python3 -m venv venv
           fi
           source venv/bin/activate && pip install -r requirements.txt
-          EOF
+        EOF
 
-      - name: Выполнить миграции базы данных
-        run: |
-          ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-          set -e
-          set -x
+    - name: Apply migrations on server
+      run: |
+        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+        set -e
+        set -x        
           cd "${{ secrets.DEPLOY_DIR }}"
           source venv/bin/activate
           export SECRET_KEY=${{ secrets.SECRET_KEY }}
           python manage.py migrate
-          EOF
+        EOF
 
-      - name: Собрать статические файлы
-        run: |
-          ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-          set -e
-          set -x
+    - name: Collect static files on server
+      run: |
+        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+        set -e
+        set -x        
           cd "${{ secrets.DEPLOY_DIR }}"
           source venv/bin/activate
           export SECRET_KEY=${{ secrets.SECRET_KEY }}
           python manage.py collectstatic --noinput
-          EOF
+        EOF
 
-      - name: Перезапустить приложение (например, systemd)
-        run: |
-          ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << EOF
-          set -e
-          set -x
-            sudo systemctl restart myapp.service
-          EOF
+    - name: Restart application
+      run: |
+        ssh -tt -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+        set -e
+        set -x
+          sudo systemctl restart myapp.service
+        EOF
