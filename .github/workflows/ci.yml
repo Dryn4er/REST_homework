@@ -64,6 +64,9 @@ jobs:
     - name: Log in docker hub
       run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
+    - name: Check SHA variable
+      run: echo "SHA:${{ secrets.github.sha }}"
+
     - name: Build docker image
       run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ secrets.github.sha }} .
 
