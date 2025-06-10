@@ -6,32 +6,58 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='user',
-            options={'verbose_name': 'Пользователь', 'verbose_name_plural': 'Пользователи'},
+            name="user",
+            options={
+                "verbose_name": "Пользователь",
+                "verbose_name_plural": "Пользователи",
+            },
         ),
         migrations.AddField(
-            model_name='user',
-            name='avatar',
-            field=models.ImageField(blank=True, help_text='Загрузите аватар', null=True, upload_to='users/avatars', verbose_name='аватар'),
+            model_name="user",
+            name="avatar",
+            field=models.ImageField(
+                blank=True,
+                help_text="Загрузите аватар",
+                null=True,
+                upload_to="users/avatars",
+                verbose_name="аватар",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='phone',
-            field=models.CharField(blank=True, help_text='Введите номер телефона', max_length=35, null=True, verbose_name='телефон'),
+            model_name="user",
+            name="phone",
+            field=models.CharField(
+                blank=True,
+                help_text="Введите номер телефона",
+                max_length=35,
+                null=True,
+                verbose_name="телефон",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='town',
-            field=models.CharField(blank=True, help_text='Введите название города', max_length=35, null=True, verbose_name='город'),
+            model_name="user",
+            name="town",
+            field=models.CharField(
+                blank=True,
+                help_text="Введите название города",
+                max_length=35,
+                null=True,
+                verbose_name="город",
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='email',
-            field=models.EmailField(help_text='Введите почту', max_length=254, unique=True, verbose_name='почта'),
+            model_name="user",
+            name="email",
+            field=models.EmailField(
+                help_text="Введите почту",
+                max_length=254,
+                unique=True,
+                verbose_name="почта",
+            ),
         ),
     ]
